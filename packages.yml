@@ -1,0 +1,78 @@
+---
+- name: Install Apache2, MySQL, Docker, and start Docker container
+  hosts: all
+  become: yes
+  tasks:
+
+    # Update package repository
+    - name: Update apt repository
+      apt:
+        update_cache: yes
+
+    # Install Apache2
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+
+    # Install MySQL server
+    - name: Install MySQL Server
+      apt:
+        name: mysql-server
+        state: present
+
+    # Install Docker
+    - name: Install dependencies for Docker
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    # Ensure Docker service is started and enabled
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    # Pull a Docker image (e.g., nginx)
+    - name: Pull Docker image (nginx)
+      docker_image:
+        name: nginx
+        source: pull
+
+    # Create a directory for ephemeral storage
+    - name: Create directory for ephemeral storage
+      file:
+        path: /tmp/ephemeral_storage
+        state: directory
+
+    # Start Docker container and mount ephemeral storage
+    - name: Start Docker container with ephemeral storage
+      docker_container:
+        name: nginx_container
+        image: nginx
+        state: started
+        volumes:
+          - /tmp/ephemeral_storage:/data
+        ports:
+          - "8080:80"
+
