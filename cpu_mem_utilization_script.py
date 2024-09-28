@@ -1,6 +1,6 @@
 import psutil
 import os
-
+#data
 # Function to check CPU usage
 def check_cpu_usage():
     print("---------------------------------")
