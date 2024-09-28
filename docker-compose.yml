@@ -1,0 +1,11 @@
+version: '2.2'
+
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+    container_name: apache_web_container
+    restart: always
+    volumes:
+      - ./html:/var/www/html
