@@ -39,6 +39,7 @@ def top_memory_processes():
 def main():
     check_cpu_usage()
     check_memory_usage()
+    
     top_cpu_processes()
     top_memory_processes()
 
